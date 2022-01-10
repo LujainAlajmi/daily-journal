@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const https = require("https");
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const session = require("express-session");
@@ -10,7 +11,7 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
-
+const url = "https://www.affirmations.dev/";
 const port = process.env.PORT || 3000;
 const homeStartingContent = "";
 const changeRoute = "";
@@ -156,8 +157,16 @@ app.get("/home", function (req, res) {
     if (err) {
       console.log(err);
     } else {
+
+https.get(url, function (responce) {
+    responce.on("data", function (data) {
+      const homeAffirmation = JSON.parse(data);
+      let foundAffirmation = homeAffirmation.affirmation;
+      res.render("home", { startingContent: req.user.firstname, posts: foundPosts, changeRoute: "logout", newAffirmation:foundAffirmation });
+    });
+  });
       
-      res.render("home", { startingContent: req.user.firstname, posts: foundPosts, changeRoute: "logout" });
+      
     }
   });
   } else {
