@@ -45,7 +45,7 @@ const postsSchema = new mongoose.Schema({
   title: String,
   content: String,
   username:String
-});
+},{  timestamps:true});
 const userSchema = new mongoose.Schema({
   // email: String,
   password: String,
@@ -232,7 +232,8 @@ app.get("/posts/:postName",function(req,res){
       res.render("post", {
       title: foundPost.title,
         content: foundPost.content,
-       changeRoute: "logout"
+        changeRoute: "logout",
+       timeStamp:foundPost.createdAt.toDateString()
     });
     }
   });
